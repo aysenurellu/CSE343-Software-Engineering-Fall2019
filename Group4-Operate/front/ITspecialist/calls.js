@@ -8,8 +8,8 @@ document.getElementById("AssignmentButton").addEventListener('click', function()
 		destination: "2",
 		action: "assignment",		
 
-		ProjectName: document.getElementById("ProjectName").value,
-		ProjectDescription:document.getElementById("ProjectDescription").value
+		projectName: document.getElementById("ProjectName").value,
+		projectDescription:document.getElementById("ProjectDescription").value
 
 
 		
@@ -24,8 +24,8 @@ document.getElementById("NewTaskButton").addEventListener('click', function(){
 		destination: "2",
 		action: "newtask",		
 
-		ProjectName: document.getElementById("ProjectName1").value,
-		ProjectDescription:document.getElementById("TaskDescription").value
+		projectName: document.getElementById("ProjectName1").value,
+		projectDescription:document.getElementById("TaskDescription").value
 
 
 		
@@ -41,7 +41,7 @@ document.getElementById("UndeployButton").addEventListener('click', function(){
 		origin:"4",
 		destination: "2",
 		action: "undeploy",
-		ProjectName: document.getElementById("UndeployProjectName").value
+		projectName: document.getElementById("UndeployProjectName").value
 		
 	});
 	document.getElementById("UndeployProjectName").value = "";
