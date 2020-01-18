@@ -25,7 +25,7 @@ document.getElementById("NewTaskButton").addEventListener('click', function(){
 		action: "newtask",		
 
 		ProjectName: document.getElementById("ProjectName1").value,
-		ProjectDescription:document.getElementById("ProjectDescription").value
+		ProjectDescription:document.getElementById("TaskDescription").value
 
 
 		
@@ -41,7 +41,7 @@ document.getElementById("UndeployButton").addEventListener('click', function(){
 		origin:"4",
 		destination: "2",
 		action: "undeploy",
-		UndeployProjectName: document.getElementById("UndeployProjectName").value
+		ProjectName: document.getElementById("UndeployProjectName").value
 		
 	});
 	document.getElementById("UndeployProjectName").value = "";
