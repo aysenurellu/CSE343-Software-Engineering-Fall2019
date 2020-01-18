@@ -5,8 +5,8 @@ document.getElementById("ProjectPathButton").addEventListener('click', function(
 		origin:"4",
 		destination: "2",
 		action: "upload",
-		ProjectName: document.getElementById("ProjectName").value,
-		ProjectPath: document.getElementById("ProjectPath").value
+		projectName: document.getElementById("ProjectName").value,
+		projectPath: document.getElementById("ProjectPath").value
 		
 	});
 	document.getElementById("ProjectPath").value = "";
@@ -17,8 +17,8 @@ document.getElementById("SqlProjectPathButton").addEventListener('click', functi
 		origin:"4",
 		destination: "2",
 		action: "uploadsql",
-		ProjectName: document.getElementById("ProjectName").value,
-		ProjectPath: document.getElementById("ProjectPath").value
+		projectName: document.getElementById("ProjectName").value,
+		projectPath: document.getElementById("ProjectPath").value
 		
 	});
 	document.getElementById("ProjectPath").value = "";
