@@ -1,0 +1,12 @@
+JSON_Send = {
+        "destination"   : "2 or 7",
+        "origin"        : "1",
+        "operation"     : "1",
+        "status"        : "True or False",
+        "description"   : "maven_report",
+        "commit_ID"     : "git_commi_id",
+        "github_login"  : "username",
+        "github_password": "password",
+        "repository_url": "git_url",
+        "project_name"  : "projectName",
+}

@@ -1,0 +1,8 @@
+JSON_Receive = {
+		        "project_name"		: "my-app", 
+		        "repository_url"	: "https://github.com/username/my-app.git", 
+		        "github_login"		: "username", 
+		        "github_password"	: "changeme",    
+		        "method"			: "",
+        		"object_type"		: ""
+}
