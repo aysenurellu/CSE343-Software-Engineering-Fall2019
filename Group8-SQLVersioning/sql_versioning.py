@@ -6,23 +6,23 @@ from base64 import b64decode, b64encode
 from io import open
 import time
 
- def save_file(path, cont):
+def save_file(path, cont):
 	ff = open(path, 'w')
 	ff.write(cont)
 	ff.close()
 
- def get_file(path):
+def get_file(path):
 	ff = open(path, 'r')
 	cont = ff.read()
 	ff.close()
 	return cont
 
- def version_file(filename, project_path,project_name, g_id, password, t_path, v_path):
+def version_file(filename, project_path,project_name, g_id, password, t_path, v_path):
 	os.popen('cp ' + t_path + filename + ' ' + v_path + filename)
 	os.popen('git -C ' + v_path + ' add ' + filename)
 	os.popen('git -C ' + v_path + ' commit -m "' + filename + '"')
 
- 	path = os.getcwd()
+	path = os.getcwd()
 	os.popen('rm -rf '+ path + '/' + "GtuDevOps")
 	os.popen('git clone https://github.com/' + g_id + '/GtuDevOps.git')
 	time.sleep(1)
@@ -35,7 +35,7 @@ import time
 	os.popen('cp -i '+ project_path + " " + path + '/' + "GtuDevOps/"  + project_name)
 	time.sleep(1)
 	os.popen('git -C '+path+'/'+"GtuDevOps" + ' remote set-url origin https://'+g_id+':'+password+'@github.com/'+g_id+'/GtuDevOps.git')
-	os.popen('git -C '+path+'/'+"GtuDevOps/" + project_name+" pull")
+	#os.popen('git -C '+path+'/'+"GtuDevOps/" + project_name+" pull")
 	time.sleep(1)
 	os.popen('git -C '+path+'/'+"GtuDevOps add " + project_name)
 	time.sleep(1)
@@ -44,27 +44,33 @@ import time
 	os.popen('git -C '+path+'/'+"GtuDevOps" + ' push -u origin master')
 	time.sleep(1)
 
- 	os.popen('rm -f ' + t_path + '/' + filename)
+	os.popen('rm -f ' + t_path + '/' + filename)
 
- def main(json_str):
+def main(json_str):
 	obj = json.loads(json_str)
 	obj['destination'] = obj['origin']
 	obj['name'] = obj['project_path'].split('/')[-1]
 
- 	if not os.path.exists('./' + obj['project_name']):
-		os.popen('mkdir '+ obj['project_name'])
-		os.popen("git init " + './' + obj['project_name'])
-	if not os.path.exists('./' + obj['project_name'] + '/temps/'):
-		os.popen('mkdir '+ obj['project_name'] + '/temps')
-		os.popen("git init " + './' + obj['project_name'] + '/temps/')
-	if not os.path.exists('./' + obj['project_name'] + '/versions/'):
-		os.popen('mkdir '+ obj['project_name'] + '/versions')
-		os.popen("git init " + './' + obj['project_name'] + '/versions/')
+	if not os.path.exists('./sqlprojects'):
+		os.popen('mkdir sqlprojects')
+		os.popen("git init sqlprojects")
 
- 	t_path = './' + obj['project_name'] + '/temps/'
-	v_path = './' + obj['project_name'] + '/versions/'
+	if not os.path.exists('./sqlprojects/' + obj['project_name']):
+		os.popen('mkdir '+ './sqlprojects/' + obj['project_name'])
+		os.popen("git init " + './sqlprojects/' + obj['project_name'])
 
- 	# get_script operasyonu iptal, README'yi kontrol edin.
+	if not os.path.exists('./sqlprojects/' + obj['project_name'] + '/temps/'):
+		os.popen('mkdir '+ './sqlprojects/' + obj['project_name'] + '/temps')
+		os.popen("git init " + './sqlprojects/' + obj['project_name'] + '/temps/')
+
+	if not os.path.exists('./sqlprojects/' + obj['project_name'] + '/versions/'):
+		os.popen('mkdir '+ './sqlprojects/' + obj['project_name'] + '/versions')
+		os.popen("git init " + './sqlprojects/' + obj['project_name'] + '/versions/')
+
+	t_path = './sqlprojects/' + obj['project_name'] + '/temps/'
+	v_path = './sqlprojects/' + obj['project_name'] + '/versions/'
+
+	# get_script operasyonu iptal, README'yi kontrol edin.
 	# kullanilmayacak ama daha sonra calisir halde duzelticem.
 	if obj['op'] == "get_script": 
 		is_exists = os.path.exists(v_path+obj['name'])
@@ -77,7 +83,7 @@ import time
 			obj['result'] = False
 
 
- 	elif obj['origin'] == '2' and obj['op'] == "version":
+	elif obj['origin'] == '2' and obj['op'] == "version":
 		file_path = obj['project_path']
 		decoded = get_file(file_path)
 		save_file(t_path+obj['name'], decoded)
