@@ -14,18 +14,18 @@ document.getElementById("newProjectStartButton").addEventListener('click', funct
 	document.getElementById("newProjectName").value = "";
 });
 document.getElementById("UndeployButton").addEventListener('click', function(){
-	if(document.getElementById("UndeployProjectName").value != ""){
+	if(document.getElementById("undeployProjectName").value != ""){
 	socket.emit('post', {
 		origin:"4",
 		destination: "2",
 		action: "undeploy",
-		projectName: document.getElementById("UndeployProjectName").value
+		projectName: document.getElementById("undeployProjectName").value
 		
 	});}
 	else{
 		window.alert("Empty Undeploy Project Name is not allowed!")
 	}
-	document.getElementById("UndeployProjectName").value = "";
+	document.getElementById("undeployProjectName").value = "";
 });
 
 socket.on('postIncoming', function(data){
