@@ -2,24 +2,33 @@ import requests
 import json 
 import logging
 import os
+import time
+
+# Log messages written into file
 logging.basicConfig(format='%(asctime)s %(message)s',
                 datefmt='%m/%d/%Y %I:%M:%S %p',
                 filename='code_versioning.log',
                 filemode='w',
                 level=logging.INFO)
-                
+
+# Functions to convert Unicode files into UTF-8. (Red u problem bugfix)      
+# Mostly taken from internet
 def json_load_byteified(file_handle):
     return _byteify(
         json.load(file_handle, object_hook=_byteify),
         ignore_dicts=True
     )
 
+# Functions to convert Unicode files into UTF-8. (Red u problem bugfix)      
+# Mostly taken from internet
 def json_loads_byteified(json_text):
     return _byteify(
         json.loads(json_text, object_hook=_byteify),
         ignore_dicts=True
     )
 
+# Functions to convert Unicode files into UTF-8. (Red u problem bugfix)      
+# Mostly taken from internet
 def _byteify(data, ignore_dicts = False):
     # if this is a unicode string, return its string representation
     if isinstance(data, unicode):
@@ -37,99 +46,123 @@ def _byteify(data, ignore_dicts = False):
     # if it's anything else, return it in its original form
     return data
 
+# Class for managing code versioning and its operations.
 class code_versioning:  
-        
-    # Instance Variable 
-    comingJson = json
-    sendJson = json
+    comingJson = json 	# Incoming request file
+    sendJson = json 	# Outgoing response file
         
     # The init method or constructor  
     def __init__(self, jsonFile):      
-        logging.info('Object created')
-        #parametre olarak gelen json fileini load(islenebilecek hale getirir) eder.
+        logging.info('code_versioning object created.')
+        # Parses the incoming JSON file, converts it to an object.
         self.comingJson = json_loads_byteified(jsonFile)
     
-    #directoryde bir json file olusturur(asagi kisimlarda hem request olarak gonderilcek hem okunarak bilgiler alincak)
+    # Creates a JSON file in the current directory. (It will be used for both incoming requests and outgoing responses.)
     def createJsonFileInDirectory(self):
         print(self.sendJson)
         with open('cv_response.json', 'w') as outfile:
             writeString=(str)(self.sendJson).replace("\'","\"")
             outfile.write(writeString)
-        logging.info('Json file created.')
+        logging.info('Response JSON file created.')
     
     def splitPathAndReturnFilename(self,path):
         return path.split("/")[-1]
 
+    # git commit
     def commit(self,repositoryPath,commitFilePath):
-        logging.info('Commit function.')
-        #split ederek file ismini bulur ve filename degiskenine kaydeder
+        logging.info('Commit function called.')
+        # Finds filename from the incoming path.
         filename=self.splitPathAndReturnFilename(commitFilePath)
-        #eger path directory ise onu repository directorysi icine kopyalar ve siler
+        # If it is a directory, copies it to repository and deletes from current directory.
         if os.path.isdir(commitFilePath):  
             os.popen('cp -r '+commitFilePath+' '+repositoryPath)
-            os.popen('rm -rf '+commitFilePath)
-        #eger path file ise onu repository directorysi icine kopyalar ve siler
+            #os.popen('rm -rf '+commitFilePath)
+        # If it is a file, copies it to repository and deletes from current directory.
         elif os.path.isfile(commitFilePath):  
             os.popen('cp '+commitFilePath+' '+repositoryPath)
-            os.popen('rm -f '+commitFilePath)
-        #kopyalanan file veya directory'i repository'e ekler ve commit eder
-        os.popen('git -C '+repositoryPath+' add '+filename)
+            #os.popen('rm -f '+commitFilePath)
+        # Adds copied file or directory to the repository, then commits it.
+        time.sleep(1)
+        os.popen('git -C '+repositoryPath+' add -f '+filename)
+        time.sleep(1)
         os.popen('git -C '+repositoryPath+' commit -m \"'+filename+'\"')
+        logging.info('Commit function finished.')
 
+
+    # git push
     def push(self,repositoryPath,id,password,url):
-        logging.info('Push function.')
-        #url'den proje ismini split ederek bulur
+        logging.info('Push function called.')
+        # Finds project name by parsing the incoming url.
         projectName=self.splitPathAndReturnFilename(url)
-        #id ve password kullanarak remote'u gunceller
-        os.popen('git -C '+repositoryPath+' remote set-url origin https://'+id+':'+password+'@github.com/'+id+'/'+projectName+'.git')
-        #pushlar 
-        #BRANCHLER AKTIF KULLANILACAKSA MASTER YERINE BRANCH EKLENEBILIR.
-        os.popen('git -C '+repositoryPath+' push -u origin master')
+        # Updates remote repository url by using the incoming github id and password. 
+        #os.popen('git -C '+repositoryPath+' remote set-url origin https://'+id+':'+password+'@github.com/'+id+'/'+projectName+'.git')
+        #Bilgisayarda calismasi icin
+        os.popen('git -C '+repositoryPath+' remote set-url origin https://'+id+':'+password+'@github.com/'+id+'/GtuDevOps'+'.git')
+        time.sleep(1)
+        # Performs push
+        #os.popen('git -C '+repositoryPath+' push -u origin master')
+        #Alternatif olarak
+        os.popen('git -C '+repositoryPath+' push -f -u origin master')
+        logging.info('Push function finished.')
 
+    # git pull
     def pull(self,repositoryPath,id,password,url):
-        logging.info('Pull function.')
-        #url'den proje ismini split ederek bulur
+        logging.info('Pull function called.')
+        # Finds project name by parsing the incoming url.
         projectName=self.splitPathAndReturnFilename(url)
-        #id ve password kullanarak remote'u gunceller
-        os.popen('git -C '+repositoryPath+' remote set-url origin https://'+id+':'+password+'@github.com/'+id+'/'+projectName+'.git')
-        #pull yapar
-        #BRANCHLER AKTIF KULLANILACAKSA MASTER YERINE BRANCH EKLENEBILIR.
+        # Updates remote repository url by using the incoming github id and password. 
+        #os.popen('git -C '+repositoryPath+' remote set-url origin https://'+id+':'+password+'@github.com/'+id+'/'+projectName+'.git')
+        os.popen('git -C '+repositoryPath+' remote set-url origin https://'+id+':'+password+'@github.com/'+id+'/GtuDevOps'+'.git')
+        time.sleep(1)
+        # Performs pull
         os.popen('git -C '+repositoryPath+' pull origin master')
+        logging.info('Pull function finished.')
 
-    #Hata vermiyor calisip calismadigindan emin degilim
+    # git merge
+    # Hata vermiyor calisip calismadigindan emin degilim
+    # TODO: Needs test
     def merge(self,repositoryPath,id,password,url):
-        logging.info('Merge function.')
-        #url'den proje ismini split ederek bulur
+        logging.info('Merge function called.')
+        # Finds project name by parsing the incoming url.
         projectName=self.splitPathAndReturnFilename(url)
-        #id ve password kullanarak remote'u gunceller
-        os.popen('git -C '+repositoryPath+' remote set-url origin https://'+id+':'+password+'@github.com/'+id+'/'+projectName+'.git')
-        #merge yapar
-        #BRANCHLER AKTIF KULLANILACAKSA MASTER YERINE BRANCH EKLENEBILIR.
+        # Updates remote repository url by using the incoming github id and password. 
+        #os.popen('git -C '+repositoryPath+' remote set-url origin https://'+id+':'+password+'@github.com/'+id+'/'+projectName+'.git')
+        os.popen('git -C '+repositoryPath+' remote set-url origin https://'+id+':'+password+'@github.com/'+id+'/GtuDevOps'+'.git')
+        time.sleep(1)
+        # Performs merge
         os.popen('git -C '+repositoryPath+' merge')
+        logging.info('Merge function finished.')
 
+    # git revert
     def revert(self,repositoryPath,id,password,url):
-        logging.info('Revert function.')
-        #url'den proje ismini split ederek bulur
+        logging.info('Revert function called.')
+        # Finds project name by parsing the incoming url.
         projectName=self.splitPathAndReturnFilename(url)
-        #id ve password kullanarak remote'u gunceller
-        os.popen('git -C '+repositoryPath+' remote set-url origin https://'+id+':'+password+'@github.com/'+id+'/'+projectName+'.git')
-        #merge yapar
-        #BRANCHLER AKTIF KULLANILACAKSA MASTER YERINE BRANCH EKLENEBILIR.
-        os.popen('git -C '+repositoryPath+' revert HEAD')
+        # Updates remote repository url by using the incoming github id and password. 
+        #os.popen('git -C '+repositoryPath+' remote set-url origin https://'+id+':'+password+'@github.com/'+id+'/'+projectName+'.git')
+        os.popen('git -C '+repositoryPath+' remote set-url origin https://'+id+':'+password+'@github.com/'+id+'/GtuDevOps'+'.git')
+        time.sleep(1)
+        # Performs revert
+        os.popen('git -C '+repositoryPath+' revert -m 1 HEAD')
+        time.sleep(1)
+        # Performs commit
         os.popen('git -C '+repositoryPath+' commit -m "Revert commit"')
-        os.popen('git -C '+repositoryPath+' push -u origin master')
+        time.sleep(1)
+        # Performs push
+        os.popen('git -C '+repositoryPath+' push -f -u origin master')#DIKKAT -f KOYDUM
+        logging.info('Revert function finished.')
 
     # Parses the coming json file / Gelen json dosyasini parse eder.
     def parseJson(self):
-        #logger hangi stagede ise o stage hakkinda bilgi verir.
-        logging.info('Json Parsing Function')
+        logging.info('parseJson called.')
 
-        #gelen json file'a gore islemler yapar
-        if(self.comingJson['destination']!='6'): #Eger destination'u cv olmayan bir dosya alirsa error verir ve cikar.
-            logging.error('Json destination is not code versioning ')
+        # If the destination is not 'Code Versioning', log the error, then exit from the program.
+        if(self.comingJson['destination']!='6'): 
+            logging.error('Incoming request destination is not code versioning!')
             exit()
         
-        #plandan gelmisse ve islem repository creation ise hem request icin hemde commit icin json file olusturur ve directory'e yazar.
+        # If the request coming from the 'Plan' group and the operation is 'repository_creation'
+        # create JSON response file in the directory for both request and the commit operation
         elif(self.comingJson['origin']=='2' and self.comingJson['operation']=='repository_creation'):
             self.sendJson = self.comingJson
             self.sendJson['title']='Code versioning request'
@@ -138,19 +171,28 @@ class code_versioning:
             self.sendJson['origin']='6'
             self.sendJson['operation']='build'
             self.createJsonFileInDirectory()
-            logging.info('Repository informations are received')
+            logging.info('Repository informations are received.')
         
-        #plandan gelmisse ve islem repository creation ise hem request icin hemde commit icin json file olusturur ve directoryde json file olustur.
-        elif(self.comingJson['origin']=='2' and self.comingJson['operation']=='commit'):
+        # If the request coming from the 'Plan' group and the operation is 'commit'
+        # read data from the response file, perform commit and push, send response back.
+    	elif(self.comingJson['origin']=='2' and self.comingJson['operation']=='commit'):
             #onceden cv_response.json olarak yazdigi dosyayi okur
             path=os.getcwd()
             path=path+'/cv_response.json'
             jsonFile=open(path,'r')
             self.sendJson = json.load(jsonFile)
-            self.commit(self.sendJson['repository_path'],self.comingJson['project_path'])
-            self.push(self.sendJson['repository_path'],self.sendJson['github_login'],self.sendJson['github_password'],self.sendJson['repository_url'])
-            r = requests.post(url = 'http://localhost:8081', data = json.dumps(self.sendJson)) 
+            if os.path.isdir(self.comingJson['project_path']) or os.path.isfile(self.comingJson['project_path']):
+                self.pull(self.sendJson['repository_path'],self.sendJson['github_login'],self.sendJson['github_password'],self.sendJson['repository_url'])
+                self.commit(self.sendJson['repository_path'],self.comingJson['project_path'])
+                self.push(self.sendJson['repository_path'],self.sendJson['github_login'],self.sendJson['github_password'],self.sendJson['repository_url'])
+                r = requests.post(url = 'http://localhost:8081', data = json.dumps(self.sendJson))
+            else:
+                logging.error('Folder or file is not here!')
+                exit()
 
+
+        # If the request coming from the 'Plan' group and the operation is 'push'
+        # read data from the response file, perform push, send response back.
         elif(self.comingJson['origin']=='2' and self.comingJson['operation']=='push'):
             #onceden cv_response.json olarak yazdigi dosyayi okur
             path=os.getcwd()
@@ -160,6 +202,8 @@ class code_versioning:
             self.push(self.sendJson['repository_path'],self.sendJson['github_login'],self.sendJson['github_password'],self.sendJson['repository_url'])
             r = requests.post(url = 'http://localhost:8081', data = json.dumps(self.sendJson)) 
 
+        # If the request coming from the 'Plan' group and the operation is 'pull'
+        # read data from the response file, perform pull.
         elif(self.comingJson['origin']=='2' and self.comingJson['operation']=='pull'):
             #onceden cv_response.json olarak yazdigi dosyayi okur
             path=os.getcwd()
@@ -168,6 +212,8 @@ class code_versioning:
             readJson =json.load(jsonFile)
             self.pull(readJson['repository_path'],readJson['github_login'],readJson['github_password'],readJson['repository_url'])
         
+        # If the request coming from the 'Plan' group and the operation is 'merge'
+        # read data from the response file, perform merge.
         elif(self.comingJson['origin']=='2' and self.comingJson['operation']=='merge'):
             #onceden cv_response.json olarak yazdigi dosyayi okur
             path=os.getcwd()
@@ -176,6 +222,8 @@ class code_versioning:
             readJson =json.load(jsonFile)
             self.merge(readJson['repository_path'],readJson['github_login'],readJson['github_password'],readJson['repository_url'])
         
+        # If the request coming from the 'Plan' group and the operation is 'revert'
+        # read data from the response file, perform revert.
         elif(self.comingJson['origin']=='2' and self.comingJson['operation']=='revert'):
             #onceden cv_response.json olarak yazdigi dosyayi okur
             path=os.getcwd()
@@ -183,6 +231,7 @@ class code_versioning:
             jsonFile=open(path,'r')
             readJson =json.load(jsonFile)
             self.revert(readJson['repository_path'],readJson['github_login'],readJson['github_password'],readJson['repository_url'])
+        logging.info('parseJson finished.')
 
     
 # Driver Code  
