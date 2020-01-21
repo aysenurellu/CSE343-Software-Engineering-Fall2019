@@ -5,7 +5,7 @@ document.getElementById("newProjectStartButton").addEventListener('click', funct
 		origin:"4",
 		destination: "2",
 		action: "newProject",
-		NewProjectName: document.getElementById("newProjectName").value	
+		newProjectName: document.getElementById("newProjectName").value	
 	});
 	document.getElementById("newProjectName").value = "";
 });
@@ -14,7 +14,7 @@ document.getElementById("UndeployButton").addEventListener('click', function(){
 		origin:"4",
 		destination: "2",
 		action: "undeploy",
-		UndeployProjectName: document.getElementById("UndeployProjectName").value
+		projectName: document.getElementById("UndeployProjectName").value
 		
 	});
 	document.getElementById("UndeployProjectName").value = "";

@@ -18,9 +18,9 @@
         <div class="man-dev-page">
             <div class="w3-third">
                 <input id="Username" class="w3-input w3-border" type="text" placeholder="User Name">
-                <br>
+                
                 <input id="Password" class="w3-input w3-border" type="Password" placeholder="Password">
-                <br>
+                
             </div>
             <button id="LogInButton" onclick="Login()">LOGIN</button>
         </div>
@@ -39,8 +39,8 @@
                 }
             }
             else if(document.getElementById("Username").value == "ITspecialist"){
-                if (document.getElementById("Password").value== "1") {
-                  location.replace("http://localhost:4001/manager/manager.html")  
+                if (document.getElementById("Password").value== "2") {
+                  location.replace("http://localhost:4001/ITspecialist/ITspecialist.html")  
                 }
                 else{
                     window.alert("Wrong Username or Password")
@@ -48,8 +48,8 @@
     
             }       
             else if(document.getElementById("Username").value == "programmer"){
-                if (document.getElementById("Password").value== "1") {
-                  location.replace("http://localhost:4001/manager/manager.html")  
+                if (document.getElementById("Password").value== "3") {
+                  location.replace("http://localhost:4001/programmer/programmer.html")  
                 }
                 else{
                     window.alert("Wrong Username or Password")

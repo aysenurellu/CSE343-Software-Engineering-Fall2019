@@ -25,11 +25,11 @@ body {
 }
 .button-left{
     float: left;
-    width: 50%;
+    width: 48%;
 }
 .button-right{
     float: right;
-    width: 50%;
+    width: 48%;
 }
 #mario-chat{
     max-width: 600px;
@@ -66,6 +66,7 @@ label{
     box-sizing: border-box;
     display: block;
     padding: 10px 20px;
+    
 }
 
 input{
@@ -80,6 +81,8 @@ input{
     border-bottom: 1px solid #eee;
     font-family: Nunito;
     font-size: 16px;
+    margin-top:0.5em ;
+    
 }
 
 button{
@@ -87,9 +90,10 @@ button{
     display: inline-block;
     background: #6495ED;
     color: #fff;
-    font-size: 18px;
+    font-size: 16px;
     border: 2px;
     border-radius: 12px;
     padding: 12px 0;
     width: 100%;
+    margin-top:0.314em ;
 }
