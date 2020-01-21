@@ -85,21 +85,9 @@ def main(json_str):
 		t_path = './sqlprojects/' + obj['project_name'] + '/temps/'
 		v_path = './sqlprojects/' + obj['project_name'] + '/versions/'
 
-		# get_script operasyonu iptal, README'yi kontrol edin.
-		# kullanilmayacak ama daha sonra calisir halde duzelticem.
-		if obj['origin'] == '2' and obj['op'] == "get_script":
-			logging.info("Request is Get Script from Group-2.") 
-			is_exists = os.path.exists(v_path+obj['name'])
-			if is_exists:
-				decoded = get_file(v_path+obj['name'])
-				obj['file'] = b64encode(str(decoded).encode('utf-8')).decode('utf-8')
-				obj['op'] = '?' #TODO: OPERATE
-			else:
-				#TODO: script yok hata gonder OPERATE
-				obj['result'] = False
-
-
-		elif obj['origin'] == '2' and obj['op'] == "version":
+		# TODO: Add new operation: "Revert the previous commit"  
+		
+		if obj['origin'] == '2' and obj['op'] == "version":
 			logging.info("Request is Version from Group-2.") 
 			file_path = obj['project_path']
 			decoded = get_file(file_path)
