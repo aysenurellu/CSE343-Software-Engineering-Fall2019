@@ -5,7 +5,7 @@ import logging.config
 from base64 import b64decode
 from collections import namedtuple
 
-logging_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'log.ini')
+logging_path = ('/home/bilmuhlab/Desktop/DevOps_Project_NEU/Group_Components/DevOps-PlanAndCode/log.ini')
 logging.config.fileConfig(fname=logging_path, disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
 
@@ -105,10 +105,17 @@ def main(json_obj):
 	output['reminder'] = data['reminder']
 	output['result'] = TableCheck(old_text, new_text, 'constraints.txt', 'data_types.txt').diff()
 	output['op'] = 'check'
-	output['origin'] = 9
-	output['destination'] = 8
+	output['origin'] = '9'
+	output['destination'] = '8'
+	output['project_name'] = data['project_name']
+	output['project_path'] = data['project_path']
+	output['github_login'] = data['github_login']
+	output['github_password'] = data['github_password']
+	output['repository_url'] = data['repository_url']
 
 	logger.info('-----> RESULT: ' + str(output['result']))
 
-	# r = requests.post('http://localhost:8081/', json=output)
-	# logger.info('-----> RESPONSE: ' + str(r.status_code))
+	r = requests.post('http://localhost:8081/', json=output)
+	logger.info('-----> RESPONSE: ' + str(r.status_code))
+
+main(json_obj)
