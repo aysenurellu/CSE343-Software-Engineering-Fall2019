@@ -53,7 +53,7 @@ def version_file(filename, project_path,project_name, g_id, password, t_path, v_
 	os.popen('git -C '+path+'/' + "GtuDevOps/" + project_name+' commit -m "Versioning Successful"')
 	logging.info('Git Commit')
 	time.sleep(1)
-	os.popen('git -C '+path+'/'+"GtuDevOps" + ' push -u origin master')
+	os.popen('git -C '+path+'/'+"GtuDevOps" + ' push -f -u origin master')
 	logging.info('Git Push')
 	time.sleep(1)
 
