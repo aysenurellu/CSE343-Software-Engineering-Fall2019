@@ -85,8 +85,6 @@ def main(json_str):
 		t_path = './sqlprojects/' + obj['project_name'] + '/temps/'
 		v_path = './sqlprojects/' + obj['project_name'] + '/versions/'
 
-		# TODO: Add new operation: "Revert the previous commit"  
-		
 		if obj['origin'] == '2' and obj['op'] == "version":
 			logging.info("Request is Version from Group-2.") 
 			file_path = obj['project_path']
@@ -105,7 +103,7 @@ def main(json_str):
 			else:
 				logging.info(obj['name'] + ": First Version.") 
 				version_file(obj['name'], obj['project_path'], obj['project_name'], obj['github_login'], obj['github_password'], t_path, v_path)
-				obj['result'] = True
+				obj['result'] = "true"
 				logging.info('Project Name: ' + obj['project_name'] + "\tFile Name: " + obj['name'] + '\nVersioning Successfully Completed. Send Result: true to Group-2')
 		elif obj['origin'] == '9' and obj['op'] == "check":
 			logging.info("Request is Check from Group-9.") 
@@ -113,23 +111,23 @@ def main(json_str):
 			if obj['result']:
 				logging.info('Project Name: ' + obj['project_name'] + "\tFile Name: " + obj['name'] + 'Group-9 return true for versioning')
 				version_file(obj['name'], obj['project_path'], obj['project_name'], obj['github_login'], obj['github_password'], t_path, v_path)
-				obj['result'] = True
+				obj['result'] = "true"
 				logging.info('Versioning Successfully Completed. Send Result: true to Group-2')
 			else:
 				logging.info('Project Name: ' + obj['project_name'] + "\tFile Name: " + obj['name'] + 'Group-9 return false for versioning')
-				obj['result'] = False
+				obj['result'] = "false"
 				logging.info('Versioning was not completed. Send Result: false to Group-2')
 		else:
-			obj['result'] = False
-			logging.error('Request or Requester is not valid. Send Result: false to Origin Group.')
+			obj['result'] = "false"
+			logging.error('Request or Requester is not valid. Send Result: false to ' + obj['origin'] +'-Group.')
 		obj['origin'] = '8'
 		del obj['op']
 		body = json.dumps(obj)
 		logging.info('Send Request to ' + obj['destination'])
 		requests.post("http://localhost:8081/", json=obj)
 	else:
-		logging.info('Project path does not exist. Project Path: ' + obj['project_path'])
+		logging.info('Project path does not exist. Send Result: false to ' + obj['origin'] +'-Group. Project Path: ' + obj['project_path'])
 		obj['origin'] = '8'
-		obj['result'] = False
+		obj['result'] = "false"
 		requests.post("http://localhost:8081/", json=obj)
 main(json_str)
